@@ -18,10 +18,6 @@ public class SecondScreen extends AppCompatActivity {
         setContentView(R.layout.activity_second_screen);
 
 
-
-
-
-
         findViewById(R.id.newPicture).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

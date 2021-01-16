@@ -3,6 +3,7 @@ package com.example.algostudy;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -30,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
          //TODO
         // Camera Permission is denied
        // But in the manifest user permission is on
+
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
 
 
@@ -107,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(intent, 0);
-            }
+                }
         });
 
     }
