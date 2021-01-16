@@ -3,7 +3,6 @@ package com.example.algostudy;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -102,18 +101,22 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        Button btn = findViewById(R.id.camera);
-        imageView = findViewById(R.id.picture); 
-
+        Button btn = findViewById(R.id.goToSecondScreen);
+        imageView = findViewById(R.id.picture);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, 0);
-                }
-        });
+            public void onClick(View v)
+            {
 
+                Intent intent = new Intent(MainActivity.this, PictureViewer.class);
+                startActivity(intent);
+            }
+        });
     }
+
+
+
+
 
     private void selectedImages() {
         final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
@@ -168,3 +171,4 @@ public class MainActivity extends AppCompatActivity {
         imageView.setImageBitmap(bitmap);
     }
 }
+
