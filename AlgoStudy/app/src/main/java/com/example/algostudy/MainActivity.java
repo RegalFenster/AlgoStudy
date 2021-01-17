@@ -109,18 +109,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void selectedImages() {
         final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
+
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
         builder.setTitle("Add Photo");
+
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
+
+
                 if (options[item].equals("Take Photo")) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
                     startActivityForResult(intent, 1);
+
                 } else if (options[item].equals("Choose from Gallery")) {
                     Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(intent, 2);
+
                 } else if (options[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
@@ -156,25 +163,14 @@ public class MainActivity extends AppCompatActivity {
             assert data != null;
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
             imageView.setImageBitmap(bitmap);
-            Uri tempUri = getImageUri(getApplicationContext(), bitmap);
-
-            // CALL THIS METHOD TO GET THE ACTUAL PATH
-            finalFile = new File(getRealPathFromURI(tempUri));
+            convertToByteArray(bitmap);
         }
     }
 
-    public Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
-
-    public String getRealPathFromURI(Uri uri) {
-        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-        return cursor.getString(idx);
+    private byte[] convertToByteArray(Bitmap bitmap){
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG,80,stream);
+        return stream.toByteArray();
     }
 }
 
