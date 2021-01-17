@@ -1,38 +1,39 @@
 package com.example.algostudy;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
-import android.net.Uri;
-
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
-    private static final int REQUEST_CODE_SELECT_IMAGE = 2;
-
+    public File f;
     private ImageView imageSelected;
     private ImageView imageView;
 
-
-         //TODO
-        // Camera Permission is denied
-       // But in the manifest user permission is on
-
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-
+    public File finalFile;
 
 
     @Override
@@ -46,15 +47,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 selectedImages();
-//                if (ContextCompat.checkSelfPermission(
-//                        getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE
-//                ) != PackageManager.PERMISSION_GRANTED) {
-//                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-//                            REQUEST_CODE_STORAGE_PERMISSION
-//                    );
-//                } else {
-//                    selectImage();
-//                }
             }
         });
 
@@ -100,22 +92,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
         Button btn = findViewById(R.id.goToSecondScreen);
         imageView = findViewById(R.id.picture);
+
+
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-
+            public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, PictureViewer.class);
+                intent.putExtra("Path", finalFile);
                 startActivity(intent);
             }
         });
     }
-
-
-
 
 
     private void selectedImages() {
@@ -127,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int item) {
                 if (options[item].equals("Take Photo")) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
+                    f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
                     startActivityForResult(intent, 1);
                 } else if (options[item].equals("Choose from Gallery")) {
                     Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -154,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void goToUrl(String url) {
         Uri uriUrl = Uri.parse(url);
         Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
@@ -162,13 +150,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //get the picture and take it to the current activity screen
-    //TODO
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Bitmap bitmap = (Bitmap)data.getExtras().get("data");
-        imageView.setImageBitmap(bitmap);
+        if (requestCode == 1 || requestCode == 2) {
+            assert data != null;
+            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+            imageView.setImageBitmap(bitmap);
+            Uri tempUri = getImageUri(getApplicationContext(), bitmap);
+
+            // CALL THIS METHOD TO GET THE ACTUAL PATH
+            finalFile = new File(getRealPathFromURI(tempUri));
+        }
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
     }
 }
+
+
+
+
+
 

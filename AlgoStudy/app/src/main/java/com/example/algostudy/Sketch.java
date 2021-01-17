@@ -1,17 +1,17 @@
 // Sketch.java
 package com.example.algostudy;
 
-
+import java.nio.ByteBuffer;
 import java.util.Stack;
 
 import processing.core.PApplet;
 import processing.core.PImage;
 
-import static processing.core.PConstants.HSB;
 
 public class Sketch extends PApplet {
 
 
+    private Object file;
     PImage img;
 
     //Array to store image hues
@@ -26,10 +26,14 @@ public class Sketch extends PApplet {
     //Possible Images
     String[] images;
 
-    public void setup(){
-        //Fits on my screen
-        size(1000, 1000);
+    public Sketch(Object finalFile) {
+        this.file = finalFile;
+    }
 
+    public void setup() {
+        //Fits on my screen
+
+        requestPermission("android.permission.READ_EXTERNAL_STORAGE", "initRead");
         background(0);
 
         textSize(32);
@@ -46,9 +50,11 @@ public class Sketch extends PApplet {
 
     }
 
-    void reset(){
+    public void reset() {
         //Load Image and strech / squash it too size
-        img = loadImage(images[(int) random(images.length)]);
+
+        img = loadImage(file.toString());
+
         img.resize(width, height);
 
         //create Array
@@ -69,24 +75,26 @@ public class Sketch extends PApplet {
         //Create a step size change the divisor higher for smaller steps but quicker animation and lower for less steps but quicker sorting, within reason.
         stepSize = width;
 
-        if(stepSize < 1) stepSize = 1;
+        if (stepSize < 1) stepSize = 1;
 
         //Draw initial image
         image(img, 0, 0);
     }
 
-    public void draw(){
+    public void draw() {
+
+
         //Make sure the stack has stuff in it to use.
-        if(!stack.isEmpty()){
-            for (int i = 0; i < stepSize; i++){
+        if (!stack.isEmpty()) {
+            for (int i = 0; i < stepSize; i++) {
                 //again for the done message to get called
-                if(!stack.isEmpty()){
+                if (!stack.isEmpty()) {
                     //Set end and start to equal the current stack's knowledge of the array. initially the length of the array and then 0
                     int end = (int) stack.pop();
                     int start = (int) stack.pop();
 
                     //Make sure that the ends have no crossed each other or are not already right next to each other.
-                    if(end - start >= 2){
+                    if (end - start >= 2) {
                         //pick the pivot for the partition algo
                         int p = (int) random((float) start, (float) end);
                         //Set P the the returned value from the partition algo
@@ -102,7 +110,7 @@ public class Sketch extends PApplet {
 
                         //The stack is constantly moving the two "ends" being tested together eventual they will be right next to each other and the stack will be empty because nothing new will be added.
                     }
-                }else{
+                } else {
                     //Look at the we done sorted!!
                     System.out.println("DONE!");
                     reset();
@@ -119,7 +127,7 @@ public class Sketch extends PApplet {
     }
 
     //Partition Algo
-    public int Part(float[] input, int position, int start, int end){
+    public int Part(float[] input, int position, int start, int end) {
         // Start and end for the current "segement" of the array we are testing
         int l = start;
         int h = end - 2;
@@ -168,5 +176,18 @@ public class Sketch extends PApplet {
         img.pixels[i] = img.pixels[j];
         img.pixels[j] = tempC;
         img.updatePixels();
+    }
+
+    PImage convertByteArrayToImage(byte[] bytes) {
+        ByteBuffer bb = ByteBuffer.wrap(bytes);
+        int w = bb.getInt();
+        int h = bb.getInt();
+        PImage img = new PImage(w, h);
+        int[] px = img.pixels;
+        for (int i = 0; i < px.length; i++) {
+            px[i] = bb.getInt();
+        }
+        img.updatePixels();
+        return img;
     }
 }
