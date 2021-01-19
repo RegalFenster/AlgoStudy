@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -30,6 +31,14 @@ public class PictureViewer extends AppCompatActivity {
 
         fragment.setView(frame, this);
 
+
+        findViewById(R.id.newPicture).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PictureViewer.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
     @Override

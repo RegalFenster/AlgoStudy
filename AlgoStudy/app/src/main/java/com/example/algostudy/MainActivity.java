@@ -49,6 +49,12 @@ public class MainActivity extends AppCompatActivity {
                 selectedImages();
             }
         });
+        findViewById(R.id.mergeInfo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToMergeSort();
+            }
+        });
 
         findViewById(R.id.bubbleButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +82,12 @@ public class MainActivity extends AppCompatActivity {
                 goToBubbleSort();
             }
         });
+        findViewById(R.id.insertButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            selectedImages();
+            }
+        });
 
         findViewById(R.id.insertInfo).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,12 +96,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.mergeInfo).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToMergeSort();
-            }
-        });
+
 
 
         Button btn = findViewById(R.id.goToSecondScreen);
