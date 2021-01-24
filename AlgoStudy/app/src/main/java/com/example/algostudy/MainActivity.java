@@ -1,13 +1,9 @@
 package com.example.algostudy;
 
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -20,11 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -100,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         Button btn = findViewById(R.id.goToSecondScreen);
+        Button aboutBtn = findViewById(R.id.aboutButton);
         imageView = findViewById(R.id.picture);
 
 
@@ -111,7 +103,18 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        aboutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ThirdActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
+
+
 
 
     private void selectedImages() {
