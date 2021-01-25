@@ -18,6 +18,7 @@ public class ThirdActivity extends AppCompatActivity {
         setContentView(R.layout.activity_third_);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("About Us");
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
